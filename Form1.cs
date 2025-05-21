@@ -1,3 +1,5 @@
+using System;
+
 namespace Cards
 {
     public partial class Form1 : Form
@@ -11,8 +13,9 @@ namespace Cards
             pictureBox1.Image = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
             g = Graphics.FromImage(pictureBox1.Image);
 
-            Bitmap im = new Bitmap(new MemoryStream(Properties.Resources.cards));
-            imageBox = new ImageBox(im, rows: 4, cols: 13);
+            Bitmap im = new Bitmap(new MemoryStream(Properties.Resources.cards1));
+            imageBox = new ImageBox(im, rows: 5, cols: 11);
+            imageBox.DeleteLastCards(3);
             //pictureBox1.Image = imageBox[0];
             rnd = new Random();
             //DrawRandCards(20);
@@ -21,33 +24,63 @@ namespace Cards
 
         }
 
-        
 
-        private void Form1_KeyDown(object? sender, KeyEventArgs e) {
+
+        private void Form1_KeyDown(object? sender, KeyEventArgs e)
+        {
             switch (e.KeyCode)
             {
                 case Keys.F1:
                     DrawRandCards(5);
                     break;
                 case Keys.F2:
-                    DrawVeerCards(20);
+                    DrawVeerCards(25);
+                    break;
+                case Keys.F3:
+                    DrawRotateCards(7);
                     break;
             }
         }
-        private void DrawVeerCards(int count =10)
+        private void DrawVeerCards(int count = 10)
         {
             g.Clear(SystemColors.Control);
             for (int i = 0; i < count; i++)
             {
                 var card_index = rnd.Next(imageBox.Count);
-                g.RotateTransform(-120 +15*(count-1));
+                g.RotateTransform(-120 + 15 * (count - 1));
                 g.DrawImage(
                     imageBox[rnd.Next(imageBox.Count)],
                     550,
-                    50);
+                    350);
             }
             pictureBox1.Invalidate();
         }
+
+        private void DrawRotateCards(int count)
+        {
+            g.Clear(SystemColors.Control);
+            int x_start = imageBox.Card_width + rnd.Next(Screen.PrimaryScreen.Bounds.Width - 3 * imageBox.Card_width);
+            int y_start = imageBox.Card_height + rnd.Next(Screen.PrimaryScreen.Bounds.Height - 3 * imageBox.Card_height);
+            int randomValue = rnd.Next(0, 2) * 2 - 1;
+           
+            for (int i = 0; i < count; i++) 
+            {
+                
+                var card_index = rnd.Next(imageBox.Count);
+                int x = x_start + i * 30; 
+                int y = y_start;
+
+
+
+                g.TranslateTransform(x, y);
+                g.RotateTransform(-1*(i - count / 2) * 5 * randomValue); 
+                g.DrawImage(imageBox[card_index], 0, 0, imageBox.Card_width, imageBox.Card_height);
+                g.ResetTransform();
+            }
+            pictureBox1.Invalidate();
+        }
+
+
         public void DrawRandCards(int count)
         {
             g.Clear(SystemColors.Control);

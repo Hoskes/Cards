@@ -69,5 +69,15 @@ namespace Cards.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] cards1 {
+            get {
+                object obj = ResourceManager.GetObject("cards1", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

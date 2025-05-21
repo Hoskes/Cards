@@ -7,7 +7,7 @@ namespace Cards
 
         public int Rows { get; }
         public int Cols { get; }
-        public int Count { get; }
+        public int Count { get; private set; }
         public int Card_width { get; private set; }
         public int Card_height { get; private set; }
 
@@ -42,6 +42,10 @@ namespace Cards
                     g.Dispose();
                 }
             }
+        }
+        public void DeleteLastCards(int count) {
+            Array.Resize(ref images,images.Length - count);
+            this.Count -= count;
         }
 
     }
