@@ -12,7 +12,7 @@ namespace Cards
             InitializeComponent();
             pictureBox1.Image = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
             g = Graphics.FromImage(pictureBox1.Image);
-
+            
             Bitmap im = new Bitmap(new MemoryStream(Properties.Resources.cards1));
             imageBox = new ImageBox(im, rows: 5, cols: 11);
             imageBox.DeleteLastCards(3);
@@ -34,24 +34,42 @@ namespace Cards
                     DrawRandCards(5);
                     break;
                 case Keys.F2:
-                    DrawVeerCards(25);
+                    DrawVeerCards(7);
                     break;
                 case Keys.F3:
                     DrawRotateCards(7);
                     break;
             }
         }
+
+       
         private void DrawVeerCards(int count = 10)
         {
             g.Clear(SystemColors.Control);
+
+            float centerX = rnd.Next(imageBox.Card_width , pictureBox1.Width - imageBox.Card_width );
+            float bottomY = rnd.Next(imageBox.Card_height, pictureBox1.Height - imageBox.Card_height); 
+
+            
+            float initialAngle = rnd.Next(-180, 180); 
+            float angleStep = 15f; 
+
             for (int i = 0; i < count; i++)
             {
                 var card_index = rnd.Next(imageBox.Count);
-                g.RotateTransform(-120 + 15 * (count - 1));
-                g.DrawImage(
-                    imageBox[rnd.Next(imageBox.Count)],
-                    550,
-                    350);
+                float angle = initialAngle + angleStep * i;
+
+               
+                float offsetX = (float)(Math.Cos(angle * Math.PI / 180) * (imageBox.Card_width / 2));
+                float offsetY = (float)(Math.Sin(angle * Math.PI / 180) * (imageBox.Card_height / 2));
+
+                
+                g.TranslateTransform(centerX + offsetX, bottomY - (imageBox.Card_height / 2));
+                g.RotateTransform(angle);
+
+                
+                g.DrawImage(imageBox[card_index], -imageBox.Card_width / 2, -imageBox.Card_height, imageBox.Card_width, imageBox.Card_height);
+                g.ResetTransform();
             }
             pictureBox1.Invalidate();
         }
